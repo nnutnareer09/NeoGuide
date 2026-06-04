@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeoGuide — Neonatal Medicine Quick Reference</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --purple: #3d1a6e;
+    --purple-dark: #2a0f52;
+    --purple-light: #6b3fa0;
+    --orange: #f4622a;
+    --orange-light: #ff8c5a;
+    --bg: #ffffff;
+    --bg2: #f8f5ff;
+    --bg3: #f3eeff;
+    --text: #1e0a3c;
+    --text2: #6b5b8a;
+    --text3: #9b8ab4;
+    --border: rgba(61,26,110,0.12);
+    --border2: rgba(61,26,110,0.25);
+    --info-bg: #ede8ff;
+    --info-text: #4a1fa8;
+    --warn-bg: #fff3e0;
+    --warn-text: #b45309;
+    --danger-bg: #ffeaea;
+    --danger-text: #c0392b;
+    --success-bg: #e8f8ee;
+    --success-text: #1a7a3f;
+    --radius: 10px;
+    --radius-lg: 16px;
+    --font: 'Poppins', -apple-system, sans-serif;
+    --mono: 'SF Mono', 'Fira Code', monospace;
+  }
+  body { font-family: var(--font); background: var(--bg3); color: var(--text); min-height: 100vh; }
+  .container { max-width: 760px; margin: 0 auto; padding: 0 1rem 4rem; }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, var(--purple-dark) 0%, var(--purple) 60%, var(--purple-light) 100%); border-radius: 0 0 28px 28px; padding: 2.5rem 1.5rem 2rem; margin: 0 -1rem 1.5rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -40px; right: -40px; width: 200px; height: 200px; background: var(--orange); opacity: 0.08; border-radius: 50%; }
+  .hero::after { content: ''; position: absolute; bottom: -30px; left: 30%; width: 140px; height: 140px; background: var(--purple-light); opacity: 0.3; border-radius: 50%; }
+  .hero-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-bottom: 0.5rem; }
+  .hero-title { font-size: 26px; font-weight: 700; color: #fff; line-height: 1.25; position: relative; z-index: 1; }
+  .hero-title span { color: var(--orange-light); }
+  .hero-sub { font-size: 13px; color: rgba(255,255,255,0.65); margin-top: 0.6rem; line-height: 1.6; position: relative; z-index: 1; }
+
+  /* ── MAIN NAV TABS (top level) ── */
+  .main-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 0; padding: 0 0.1rem 1rem; border-bottom: 1.5px solid var(--border); }
+  .main-tab { font-size: 12px; font-family: var(--font); padding: 8px 16px; border-radius: 50px; border: 1.5px solid var(--border2); background: var(--bg); color: var(--text2); cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 6px; font-weight: 600; white-space: nowrap; }
+  .main-tab:hover { background: var(--bg2); border-color: var(--purple-light); color: var(--purple); }
+  .main-tab.active { background: var(--purple); color: #fff; border-color: var(--purple); box-shadow: 0 4px 14px rgba(61,26,110,0.3); }
+  .main-tab-icon { font-size: 16px; line-height: 1; }
+
+  /* ── MAIN PANELS ── */
+  .main-panel { display: none; }
+  .main-panel.active { display: flex; gap: 0; margin-top: 1.25rem; }
+
+  /* ── SIDEBAR ── */
+  .sidebar { width: 175px; flex-shrink: 0; margin-right: 1rem; }
+  .sidebar-group { margin-bottom: 0.25rem; }
+  .sidebar-group-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); padding: 8px 10px 4px; }
+  .sidebar-item { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; font-size: 12px; font-family: var(--font); font-weight: 500; color: var(--text2); background: transparent; border: none; border-radius: var(--radius); padding: 8px 10px; cursor: pointer; transition: all 0.15s; line-height: 1.3; }
+  .sidebar-item:hover { background: var(--bg2); color: var(--purple); }
+  .sidebar-item.active { background: var(--orange); color: #fff; font-weight: 600; box-shadow: 0 3px 10px rgba(244,98,42,0.3); }
+  .sidebar-item .si-icon { font-size: 14px; flex-shrink: 0; }
+  .sidebar-divider { height: 1px; background: var(--border); margin: 6px 10px; }
+
+  /* ── CONTENT AREA ── */
+  .content-area { flex: 1; min-width: 0; }
+  .content-section { display: none; }
+  .content-section.active { display: block; }
+  .section-title { font-size: 16px; font-weight: 600; color: var(--purple); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+  .section-title::before { content: ''; display: inline-block; width: 4px; height: 18px; background: var(--orange); border-radius: 4px; }
+
+  /* ── COMING SOON ── */
+  .coming-soon { text-align: center; padding: 3rem 1rem; color: var(--text3); }
+  .coming-soon-icon { font-size: 40px; margin-bottom: 0.75rem; }
+  .coming-soon-text { font-size: 14px; font-weight: 500; color: var(--text2); }
+  .coming-soon-sub { font-size: 12px; margin-top: 0.25rem; }
+
+  /* ── RESPONSIVE: collapse sidebar on mobile ── */
+  @media (max-width: 580px) {
+    .main-panel.active { flex-direction: column; }
+    .sidebar { width: 100%; margin-right: 0; margin-bottom: 0.75rem; display: flex; flex-wrap: wrap; gap: 6px; }
+    .sidebar-group { display: contents; }
+    .sidebar-group-label { display: none; }
+    .sidebar-divider { display: none; }
+    .sidebar-item { width: auto; font-size: 11px; padding: 6px 10px; border: 1.5px solid var(--border2); }
+    .sidebar-item.active { border-color: var(--orange); }
+  }
+
+  /* CARDS */
+  .card { background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: 0 2px 12px rgba(61,26,110,0.06); }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--purple); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .badge { font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 600; }
+  .badge-info { background: var(--info-bg); color: var(--info-text); }
+  .badge-warn { background: var(--warn-bg); color: var(--warn-text); }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-weight: 600; font-size: 11px; color: var(--text2); padding: 7px 8px; border-bottom: 1.5px solid var(--border); text-transform: uppercase; letter-spacing: 0.05em; }
+  td { padding: 8px 8px; border-bottom: 1px solid var(--border); color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg2); }
+
+  /* MISC */
+  .formula-box { background: var(--purple-dark); color: #e8d9ff; border-radius: var(--radius); padding: 0.75rem 1rem; margin: 0.5rem 0; font-size: 14px; font-family: var(--mono); }
+  .note { font-size: 12px; color: var(--text2); margin-top: 0.5rem; line-height: 1.6; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .calc-row { display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem; }
+  .calc-row label { font-size: 12px; color: var(--text2); min-width: 140px; font-weight: 500; }
+  .calc-row input[type=range] { flex: 1; accent-color: var(--orange); }
+  .calc-row select, .calc-row input[type=number] { flex: 1; font-family: var(--font); font-size: 13px; padding: 7px 10px; border-radius: var(--radius); border: 1.5px solid var(--border2); background: var(--bg); color: var(--text); cursor: pointer; }
+  .calc-row select:focus, .calc-row input:focus { outline: none; border-color: var(--orange); }
+  .result-box { background: linear-gradient(135deg, var(--purple-dark), var(--purple)); border-radius: var(--radius); padding: 0.75rem 1rem; margin-top: 0.75rem; }
+  .result-label { font-size: 11px; color: rgba(255,255,255,0.65); margin-bottom: 2px; font-weight: 500; }
+  .result-val { font-size: 20px; font-weight: 700; color: #fff; }
+  .flow-step { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+  .step-num { min-width: 26px; height: 26px; border-radius: 50%; background: var(--orange); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; margin-top: 1px; }
+  .step-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .hl-green { color: var(--success-text); font-weight: 600; }
+  .hl-red { color: var(--danger-text); font-weight: 600; }
+  .hl-warn { color: var(--warn-text); font-weight: 600; }
+  .sep { height: 1px; background: var(--border); margin: 1rem 0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 520px) { .two-col, .grid2 { grid-template-columns: 1fr; } .hero-title { font-size: 20px; } .tab { font-size: 11px; padding: 6px 11px; } }
+
+  /* FOOTER */
+  .footer { text-align: center; font-size: 12px; color: var(--text3); padding: 2rem 1rem; border-top: 1.5px solid var(--border); margin-top: 2rem; line-height: 1.8; }
+  .footer-name { font-weight: 600; color: var(--purple); font-size: 13px; }
+  .footer-version { display: inline-block; background: var(--orange); color: #fff; font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 20px; margin-left: 6px; vertical-align: middle; }
+
+  /* INPUT STYLE for calc rows */
+  input[type=number] { padding: 7px 10px; border-radius: var(--radius); border: 1.5px solid var(--border2); background: var(--bg); color: var(--text); font-family: var(--font); font-size: 13px; width: 100%; }
+  .eos-table { border-collapse: separate; border-spacing: 0; }
+  .eos-table th { background: var(--purple); color: #fff; text-transform: none; font-size: 12px; letter-spacing: 0; padding: 10px 10px; border: none; }
+  .eos-table td { vertical-align: top; padding: 10px 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .eos-table tr:last-child td { border-bottom: none; }
+  .eos-table tr:hover td { background: var(--bg2); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <div class="hero-label">Neonatal Medicine Quick Reference</div>
+    <div class="hero-title">Neo<span>Guide</span></div>
+    <div class="hero-sub">A practical neonatal companion for fellows, residents, and NICU teams.</div>
+  </div>
+
+  <!-- ══ MAIN NAVIGATION TABS ══ -->
+  <div class="main-tabs">
+    <button class="main-tab active" onclick="showMain('ref',this)"><span class="main-tab-icon">📋</span>References</button>
+    <button class="main-tab" onclick="showMain('calc',this)"><span class="main-tab-icon">🧮</span>Calculators</button>
+    <button class="main-tab" onclick="showMain('med',this)"><span class="main-tab-icon">💊</span>Medications</button>
+    <button class="main-tab" onclick="showMain('screen',this)"><span class="main-tab-icon">🔍</span>Screening</button>
+    <button class="main-tab" onclick="showMain('tpn',this)"><span class="main-tab-icon">🍼</span>TPN / Feeds</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PANEL 1 — REFERENCES
+  ══════════════════════════════════════════ -->
+  <div id="panel-ref" class="main-panel active">
+    <div class="sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Airway</div>
+        <button class="sidebar-item active" onclick="showSub('ref','ett',this)"><span class="si-icon">🫁</span>ETT &amp; Airway</button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Growth</div>
+        <button class="sidebar-item" onclick="showSub('ref','fenton',this)"><span class="si-icon">📈</span>Fenton 2025</button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Vitals</div>
+        <button class="sidebar-item" onclick="showSub('ref','bp',this)"><span class="si-icon">❤️</span>Blood Pressure</button>
+        <button class="sidebar-item" onclick="showSub('ref','nte',this)"><span class="si-icon">🌡️</span>NTE</button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Respiratory</div>
+        <button class="sidebar-item" onclick="showSub('ref','fio2',this)"><span class="si-icon">💨</span>Effective FiO2</button>
+      </div>
+    </div>
+    <div class="content-area">
+      <div id="ref-ett" class="content-section active">
+
+    <p class="section-title">Endotracheal tube — size &amp; depth</p>
+    <div class="card">
+      <div class="card-title">ETT size by birth weight / GA <span class="badge badge-info">NRP 8th Ed</span></div>
+      <table>
+        <tr><th>Birth weight</th><th>GA (weeks)</th><th>ETT size (mm)</th></tr>
+        <tr><td>&lt; 1,000 g</td><td>&lt; 28</td><td>2.5</td></tr>
+        <tr><td>1,000 – 2,000 g</td><td>28 – 34</td><td>3.0</td></tr>
+        <tr><td>&gt; 2,000 g</td><td>&gt; 34</td><td>3.5</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Initial insertion depth (lip to tip)</div>
+      <table>
+        <tr><th>GA (weeks)</th><th>BW (g)</th><th>Depth (cm)</th></tr>
+        <tr><td>23 – 24</td><td>500 – 600</td><td>5.5</td></tr>
+        <tr><td>25 – 26</td><td>700 – 800</td><td>6.0</td></tr>
+        <tr><td>27 – 29</td><td>900 – 1,000</td><td>6.5</td></tr>
+        <tr><td>30 – 32</td><td>1,100 – 1,400</td><td>7.0</td></tr>
+        <tr><td>33 – 34</td><td>1,500 – 1,800</td><td>7.5</td></tr>
+        <tr><td>35 – 37</td><td>1,900 – 2,400</td><td>8.0</td></tr>
+        <tr><td>38 – 40</td><td>2,500 – 3,100</td><td>8.5</td></tr>
+        <tr><td>41 – 43</td><td>3,200 – 4,200</td><td>9.0</td></tr>
+      </table>
+    </div>
+  
+</div>
+      <div id="ref-fenton" class="content-section">
+
+    <p class="section-title">Fenton 2025 — Preterm Growth Percentile</p>
+    <div class="card">
+      <div class="card-title">Patient details</div>
+      <div class="calc-row"><label>Sex</label>
+        <select id="fen-sex" onchange="calcFenton()" style="flex:1">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div class="calc-row"><label>Gestational age (weeks)</label>
+        <input type="range" min="22" max="50" step="0.5" value="32" id="fen-ga" oninput="calcFenton()">
+        <span id="fen-ga-lbl" style="font-size:13px;min-width:44px;font-weight:500">32.0</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Measurements</div>
+      <div class="calc-row"><label>Weight (g)</label>
+        <input type="number" id="fen-wt" placeholder="e.g. 1800" oninput="calcFenton()" style="flex:1;padding:6px 8px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);font-size:13px;">
+      </div>
+      <div class="calc-row"><label>Length (cm)</label>
+        <input type="number" id="fen-len" placeholder="e.g. 42" oninput="calcFenton()" style="flex:1;padding:6px 8px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);font-size:13px;">
+      </div>
+      <div class="calc-row"><label>Head circ. (cm)</label>
+        <input type="number" id="fen-hc" placeholder="e.g. 29" oninput="calcFenton()" style="flex:1;padding:6px 8px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);font-size:13px;">
+      </div>
+    </div>
+    <div class="card" id="fen-results" style="display:none">
+      <div class="card-title">Percentiles <span class="badge badge-info">Fenton 2025</span></div>
+      <div class="grid2" style="gap:10px">
+        <div class="result-box"><div class="result-label">Weight percentile</div><div class="result-val" id="fen-wt-pct">—</div></div>
+        <div class="result-box"><div class="result-label">Length percentile</div><div class="result-val" id="fen-len-pct">—</div></div>
+        <div class="result-box"><div class="result-label">Head circ. percentile</div><div class="result-val" id="fen-hc-pct">—</div></div>
+        <div class="result-box"><div class="result-label">Classification</div><div class="result-val" id="fen-class" style="font-size:15px">—</div></div>
+      </div>
+      <div class="note" style="margin-top:0.75rem">SGA = &lt; 10th percentile &nbsp;·&nbsp; AGA = 10th–90th &nbsp;·&nbsp; LGA = &gt; 90th percentile</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Reference percentile values — Weight (g)</div>
+      <div style="overflow-x:auto">
+      <table>
+        <tr><th>GA (wk)</th><th>3rd</th><th>10th</th><th>50th</th><th>90th</th><th>97th</th></tr>
+        <tr><td>24</td><td>446</td><td>535</td><td>680</td><td>864</td><td>1034</td></tr>
+        <tr><td>26</td><td>590</td><td>695</td><td>880</td><td>1115</td><td>1334</td></tr>
+        <tr><td>28</td><td>770</td><td>900</td><td>1140</td><td>1440</td><td>1724</td></tr>
+        <tr><td>30</td><td>1010</td><td>1175</td><td>1480</td><td>1870</td><td>2236</td></tr>
+        <tr><td>32</td><td>1320</td><td>1530</td><td>1920</td><td>2420</td><td>2896</td></tr>
+        <tr><td>34</td><td>1720</td><td>1990</td><td>2490</td><td>3120</td><td>3732</td></tr>
+        <tr><td>36</td><td>2190</td><td>2520</td><td>3130</td><td>3880</td><td>4624</td></tr>
+        <tr><td>38</td><td>2620</td><td>2990</td><td>3660</td><td>4490</td><td>5325</td></tr>
+        <tr><td>40</td><td>2900</td><td>3280</td><td>3980</td><td>4840</td><td>5714</td></tr>
+      </table>
+      </div>
+    </div>
+  
+</div>
+      <div id="ref-bp" class="content-section">
+        <p class="section-title">Blood Pressure Reference</p>
+
+        <!-- Input card -->
+        <div class="card" style="background:var(--purple-dark);border-color:transparent;">
+          <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:1rem;letter-spacing:0.02em;">POCUSNEO Blood Pressure Calculator</div>
+
+          <div style="margin-bottom:0.75rem">
+            <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:4px;font-weight:500">Gestation at birth</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <select id="bp-ga-wk" onchange="calcBP()" style="flex:1;padding:8px 10px;border-radius:var(--radius);border:none;background:rgba(255,255,255,0.12);color:#fff;font-family:var(--font);font-size:13px;font-weight:500;">
+                <option value="23">23 Weeks</option><option value="24">24 Weeks</option><option value="25">25 Weeks</option>
+                <option value="26">26 Weeks</option><option value="27">27 Weeks</option><option value="28">28 Weeks</option>
+                <option value="29">29 Weeks</option><option value="30" selected>30 Weeks</option><option value="31">31 Weeks</option>
+                <option value="32">32 Weeks</option><option value="33">33 Weeks</option><option value="34">34 Weeks</option>
+                <option value="35">35 Weeks</option><option value="36">36 Weeks</option><option value="37">37 Weeks</option>
+                <option value="38">38 Weeks</option><option value="39">39 Weeks</option><option value="40">40 Weeks</option>
+                <option value="41">41 Weeks</option><option value="42">42 Weeks</option>
+              </select>
+              <span style="color:rgba(255,255,255,0.5);font-size:16px">+</span>
+              <select id="bp-ga-day" onchange="calcBP()" style="flex:1;padding:8px 10px;border-radius:var(--radius);border:none;background:rgba(255,255,255,0.12);color:#fff;font-family:var(--font);font-size:13px;font-weight:500;">
+                <option value="0">0 Days</option><option value="1">1 Day</option><option value="2">2 Days</option>
+                <option value="3">3 Days</option><option value="4">4 Days</option><option value="5">5 Days</option><option value="6">6 Days</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-bottom:0.75rem">
+            <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:4px;font-weight:500">Current DOL (days)</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <input type="number" id="bp-dol" placeholder="" min="0" max="120" oninput="calcBP()" style="flex:1;padding:8px 10px;border-radius:var(--radius);border:none;background:rgba(255,255,255,0.12);color:#fff;font-family:var(--font);font-size:13px;">
+              <span style="color:rgba(255,255,255,0.5);font-size:12px">days</span>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0.75rem">
+            <div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:4px;font-weight:500">Systolic BP</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <input type="number" id="bp-in-sys" placeholder="" oninput="calcBP()" style="flex:1;padding:8px 10px;border-radius:var(--radius);border:none;background:rgba(255,255,255,0.12);color:#fff;font-family:var(--font);font-size:13px;">
+                <span style="color:rgba(255,255,255,0.4);font-size:11px">mm Hg</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:4px;font-weight:500">Diastolic BP</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <input type="number" id="bp-in-dia" placeholder="" oninput="calcBP()" style="flex:1;padding:8px 10px;border-radius:var(--radius);border:none;background:rgba(255,255,255,0.12);color:#fff;font-family:var(--font);font-size:13px;">
+                <span style="color:rgba(255,255,255,0.4);font-size:11px">mm Hg</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:4px;font-weight:500">Mean BP</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <input type="number" id="bp-in-map" placeholder="" oninput="calcBP()" style="flex:1;padding:8px 10px;border-radius:var(--radius);border:none;background:rgba(255,255,255,0.12);color:#fff;font-family:var(--font);font-size:13px;">
+                <span style="color:rgba(255,255,255,0.4);font-size:11px">mm Hg</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:4px;font-weight:500">Pulse Pressure</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <input type="number" id="bp-in-pp" placeholder="" oninput="calcBP()" style="flex:1;padding:8px 10px;border-radius:var(--radius);border:none;background:rgba(255,255,255,0.12);color:#fff;font-family:var(--font);font-size:13px;">
+                <span style="color:rgba(255,255,255,0.4);font-size:11px">mm Hg</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Centile result blocks -->
+        <div id="bp-results">
+          <!-- 95th Centile -->
+          <div style="border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.08)">
+            <div style="background:#d4930a;padding:10px 16px;font-size:13px;font-weight:700;color:#fff;">95th Centile</div>
+            <div style="background:#fef3cd;">
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px;color:#1e0a3c">
+                <span style="color:#6b5b8a">Systolic</span><span id="bp-r-sys-95" style="font-weight:600"></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px;color:#1e0a3c">
+                <span style="color:#6b5b8a">Diastolic</span><span id="bp-r-dia-95" style="font-weight:600"></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px;color:#1e0a3c">
+                <span style="color:#6b5b8a">Mean</span><span id="bp-r-map-95" style="font-weight:600"></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;font-size:13px;color:#1e0a3c">
+                <span style="color:#6b5b8a">Pulse pressure</span><span id="bp-r-pp-95" style="font-weight:600"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 50th Centile -->
+          <div style="border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.08)">
+            <div style="background:#4caf50;padding:10px 16px;font-size:13px;font-weight:700;color:#fff;">50th Centile</div>
+            <div style="background:#e8f5e9;">
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px">
+                <span style="color:#6b5b8a">Systolic</span><span id="bp-r-sys-50" style="font-weight:600;color:#1e0a3c"></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px">
+                <span style="color:#6b5b8a">Diastolic</span><span id="bp-r-dia-50" style="font-weight:600;color:#1e0a3c"></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px">
+                <span style="color:#6b5b8a">Mean</span><span id="bp-r-map-50" style="font-weight:600;color:#1e0a3c"></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;font-size:13px">
+                <span style="color:#6b5b8a">Pulse pressure</span><span id="bp-r-pp-50" style="font-weight:600;color:#1e0a3c"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 25th Centile (derived) -->
+          <div style="border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.08)">
+            <div style="background:#bdbdbd;padding:10px 16px;font-size:13px;font-weight:700;color:#333;">25th Centile <span style="font-weight:400;font-size:11px">(derived)</span></div>
+            <div style="background:#f5f5f5;">
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px">
+                <span style="color:#6b5b8a">Systolic</span><span id="bp-r-sys-25" style="font-weight:600;color:#1e0a3c"></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px">
+                <span style="color:#6b5b8a">Diastolic</span><span id="bp-r-dia-25" style="font-weight:600;color:#1e0a3c"></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px">
+                <span style="color:#6b5b8a">Mean</span><span id="bp-r-map-25" style="font-weight:600;color:#1e0a3c"></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;font-size:13px">
+                <span style="color:#6b5b8a">Pulse pressure</span><span id="bp-r-pp-25" style="font-weight:600;color:#1e0a3c"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5th Centile -->
+          <div style="border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.08)">
+            <div style="background:#f8cdd0;padding:10px 16px;font-size:13px;font-weight:700;color:#c0392b;">5th Centile</div>
+            <div style="background:#fff5f5;">
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px">
+                <span style="color:#6b5b8a">Systolic</span><span id="bp-r-sys-5" style="font-weight:600;color:#c0392b"></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px">
+                <span style="color:#6b5b8a">Diastolic</span><span id="bp-r-dia-5" style="font-weight:600;color:#c0392b"></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px">
+                <span style="color:#6b5b8a">Mean</span><span id="bp-r-map-5" style="font-weight:600;color:#c0392b"></span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:9px 16px;font-size:13px">
+                <span style="color:#6b5b8a">Pulse pressure</span><span id="bp-r-pp-5" style="font-weight:600;color:#c0392b"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Weaning Target -->
+          <div style="border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.08)">
+            <div style="background:#e0e0e0;padding:10px 16px;font-size:13px;font-weight:700;color:#333;">Weaning Target</div>
+            <div style="background:#fafafa;padding:9px 16px;">
+              <div style="font-size:12px;color:var(--text2);line-height:1.7">
+                Target MAP &ge; <strong id="bp-wean-map" style="color:var(--purple);font-size:14px">—</strong> mmHg (25th centile)<br>
+                Target Systolic &ge; <strong id="bp-wean-sys" style="color:var(--purple);font-size:14px">—</strong> mmHg<br>
+                <span style="font-size:11px;color:var(--text3)">Wean inotropes when BP sustains above 25th centile for GA</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Patient BP interpretation -->
+          <div id="bp-pt-result" style="display:none;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;box-shadow:0 2px 10px rgba(0,0,0,0.1)">
+            <div id="bp-pt-header" style="padding:10px 16px;font-size:13px;font-weight:700;color:#fff;"></div>
+            <div id="bp-pt-body" style="padding:12px 16px;font-size:12px;line-height:1.8;"></div>
+          </div>
+        </div>
+
+        <!-- Credit -->
+        <div style="background:var(--bg2);border-radius:var(--radius);padding:0.75rem 1rem;font-size:11px;color:var(--text2);line-height:1.7;border-left:4px solid var(--purple-light)">
+          <strong style="color:var(--purple)">Adapted from POCUSNEO Blood Pressure Calculator — NeoPeds Academy</strong><br>
+          Developed by Dr. Gani &amp; Dr. Yasser with technical assistance from Reboot Enterprise, New Zealand ·
+          <a href="https://neopeds.academy/bp/" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:none">neopeds.academy/bp</a><br>
+          <strong>Data:</strong> Zubrow AB et al. <em>J Perinatol.</em> 1995;15:470-479 · Kent AL et al. <em>Pediatr Nephrol.</em> 2007;22:1335-1341
+        </div>
+      </div>
+      <div id="ref-nte" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">🌡️</div><div class="coming-soon-text">Neutral Thermal Environment</div><div class="coming-soon-sub">Coming soon — data being added</div></div>
+      </div>
+      <div id="ref-fio2" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">💨</div><div class="coming-soon-text">Effective FiO2 Table</div><div class="coming-soon-sub">Coming soon — data being added</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PANEL 2 — CALCULATORS
+  ══════════════════════════════════════════ -->
+  <div id="panel-calc" class="main-panel">
+    <div class="sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Lines</div>
+        <button class="sidebar-item active" onclick="showSub('calc','umb',this)"><span class="si-icon">💉</span>UAC / UVC Depth</button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Sepsis</div>
+        <button class="sidebar-item" onclick="showSub('calc','eos',this)"><span class="si-icon">🦠</span>EOS Risk Score</button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Respiratory</div>
+        <button class="sidebar-item" onclick="showSub('calc','oi',this)"><span class="si-icon">💨</span>Oxygenation Index</button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Lung</div>
+        <button class="sidebar-item" onclick="showSub('calc','bpdrisk',this)"><span class="si-icon">🫧</span>BPD Risk</button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Transfusion</div>
+        <button class="sidebar-item" onclick="showSub('calc','partialexch',this)"><span class="si-icon">🩸</span>Partial Exchange</button>
+        <button class="sidebar-item" onclick="showSub('calc','totalexch',this)"><span class="si-icon">🔄</span>Total Exchange</button>
+      </div>
+    </div>
+    <div class="content-area">
+      <div id="calc-umb" class="content-section active">
+
+    <p class="section-title">Umbilical catheterization</p>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">UAC (arterial)</div>
+        <div class="formula-box">(3 × BW) + 9 + stump</div>
+        <div class="note">Position: High type T6–T9 · Low type L3–L4<br>Size: 3.5 or 5 Fr</div>
+      </div>
+      <div class="card">
+        <div class="card-title">UVC (venous)</div>
+        <div class="formula-box">[(3×BW)+9+1] ÷ 2 + stump</div>
+        <div class="note">Position: just above diaphragm (IVC/RA junction, ≤1 cm)<br>Size: 3.5 or 5 Fr</div>
+        <div class="sep"></div>
+        <div class="note"><span class="hl-warn">Exchange / resus:</span> 3–5 cm (free flow of blood)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Live depth calculator</div>
+      <div class="calc-row">
+        <label>Birth weight (kg)</label>
+        <input type="range" min="0.5" max="5" step="0.1" value="1.5" id="bw-sl" oninput="calcUmb()">
+        <span id="bw-lbl" style="font-size:13px;min-width:40px;font-weight:500">1.5</span>
+      </div>
+      <div class="calc-row">
+        <label>Stump length (cm)</label>
+        <input type="range" min="0" max="3" step="0.5" value="0.5" id="stump-sl" oninput="calcUmb()">
+        <span id="stump-lbl" style="font-size:13px;min-width:40px;font-weight:500">0.5</span>
+      </div>
+      <div class="grid2">
+        <div class="result-box"><div class="result-label">UAC depth (cm)</div><div class="result-val" id="uac-res">—</div></div>
+        <div class="result-box"><div class="result-label">UVC depth (cm)</div><div class="result-val" id="uvc-res">—</div></div>
+      </div>
+    </div>
+  
+</div>
+      <div id="calc-eos" class="content-section">
+
+    <p class="section-title">EOS Risk Calculator</p>
+    <div class="card">
+      <div class="card-title">Maternal factors</div>
+      <div class="calc-row"><label>Gestational age (weeks)</label>
+        <input type="range" min="34" max="43" step="0.5" value="39" id="eos-ga" oninput="calcEOS()">
+        <span id="eos-ga-lbl" style="font-size:13px;min-width:44px;font-weight:500">39.0</span>
+      </div>
+      <div class="calc-row"><label>Highest intrapartum fever (°C)</label>
+        <select id="eos-fever" onchange="calcEOS()" style="flex:1">
+          <option value="none">No fever (&lt; 38.0)</option>
+          <option value="38-38.4">38.0 – 38.4</option>
+          <option value="38.5+">≥ 38.5</option>
+        </select>
+      </div>
+      <div class="calc-row"><label>ROM duration (hours)</label>
+        <select id="eos-rom" onchange="calcEOS()" style="flex:1">
+          <option value="lt12">&lt; 12 hours</option>
+          <option value="12-17">12 – 17.9 hours</option>
+          <option value="18-23">18 – 23.9 hours</option>
+          <option value="ge24">≥ 24 hours</option>
+        </select>
+      </div>
+      <div class="calc-row"><label>GBS status</label>
+        <select id="eos-gbs" onchange="calcEOS()" style="flex:1">
+          <option value="neg">Negative</option>
+          <option value="pos">Positive</option>
+          <option value="unknown">Unknown / not done</option>
+        </select>
+      </div>
+      <div class="calc-row"><label>Intrapartum antibiotics</label>
+        <select id="eos-abx" onchange="calcEOS()" style="flex:1">
+          <option value="none">None / inadequate</option>
+          <option value="broad">Broad spectrum ≥ 4 h</option>
+          <option value="gbs">GBS-specific ≥ 2 h</option>
+          <option value="gbs4">GBS-specific ≥ 4 h</option>
+        </select>
+      </div>
+    </div>
+    <!-- Result: EOS Risk at Birth -->
+    <div class="card">
+      <div class="card-title">EOS Risk @ Birth <span class="badge badge-info">Kaiser Permanente model</span></div>
+      <div style="overflow-x:auto">
+        <table class="eos-table">
+          <tr>
+            <th style="background:var(--purple);color:#fff;border-radius:8px 0 0 0">Risk per 1,000 births</th>
+            <th style="background:var(--purple);color:#fff;border-radius:0 8px 0 0">Value</th>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--purple)">EOS Risk @ Birth</td>
+            <td style="font-weight:700;font-size:18px;color:var(--orange)" id="eos-risk">—</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Result: After Clinical Exam table -->
+    <div class="card">
+      <div class="card-title">EOS Risk after Clinical Exam</div>
+      <div style="overflow-x:auto">
+        <table class="eos-table">
+          <tr>
+            <th style="background:var(--purple);color:#fff;width:22%">Clinical Exam</th>
+            <th style="background:var(--purple);color:#fff;width:20%">Risk per 1,000 births</th>
+            <th style="background:var(--purple);color:#fff;width:35%">Clinical Recommendation</th>
+            <th style="background:var(--purple);color:#fff;width:23%">Vitals</th>
+          </tr>
+          <tr id="eos-row-well">
+            <td style="font-weight:600;color:var(--purple)">Well Appearing</td>
+            <td id="eos-well-risk" style="font-weight:700;color:var(--orange)">—</td>
+            <td id="eos-well-rec">—</td>
+            <td id="eos-well-vitals" style="font-size:12px;color:var(--text2)">—</td>
+          </tr>
+          <tr id="eos-row-equiv">
+            <td style="font-weight:600;color:var(--purple)">Equivocal</td>
+            <td id="eos-equiv-risk" style="font-weight:700;color:var(--orange)">—</td>
+            <td id="eos-equiv-rec">—</td>
+            <td id="eos-equiv-vitals" style="font-size:12px;color:var(--text2)">—</td>
+          </tr>
+          <tr id="eos-row-ill">
+            <td style="font-weight:600;color:var(--purple)">Clinical Illness</td>
+            <td id="eos-ill-risk" style="font-weight:700;color:var(--orange)">—</td>
+            <td id="eos-ill-rec">—</td>
+            <td id="eos-ill-vitals" style="font-size:12px;color:var(--text2)">—</td>
+          </tr>
+        </table>
+      </div>
+      <div class="note" style="margin-top:0.5rem">Based on Escobar et al. (Kaiser Permanente). Estimate only — always apply clinical judgement. Not validated for GA &lt; 34 weeks.</div>
+    </div>
+
+    <!-- Clinical Classification criteria -->
+    <div class="card">
+      <div class="card-title">Classification of Infant's Clinical Presentation</div>
+      <div style="overflow-x:auto">
+        <table class="eos-table">
+          <tr>
+            <th style="background:var(--purple);color:#fff;width:22%">Clinical Exam</th>
+            <th style="background:var(--purple);color:#fff">Description</th>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--purple);vertical-align:top;padding-top:12px">Clinical Illness</td>
+            <td style="font-size:12px;line-height:1.7;padding:10px 8px">
+              <ol style="padding-left:1.2rem;margin:0">
+                <li>Persistent need for NCPAP / HFNC / mechanical ventilation (outside of the delivery room)</li>
+                <li>Hemodynamic instability requiring vasoactive drugs</li>
+                <li>Neonatal encephalopathy / Perinatal depression
+                  <ul style="padding-left:1rem;margin:2px 0;list-style:square">
+                    <li>Seizure</li>
+                    <li>Apgar Score @ 5 minutes &lt; 5</li>
+                  </ul>
+                </li>
+                <li>Need for supplemental O&#8322; &ge; 2 hours to maintain oxygen saturations &gt; 90% (outside of the delivery room)</li>
+              </ol>
+            </td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--purple);vertical-align:top;padding-top:12px">Equivocal</td>
+            <td style="font-size:12px;line-height:1.7;padding:10px 8px">
+              <ol style="padding-left:1.2rem;margin:0">
+                <li>Persistent physiologic abnormality &ge; 4 hrs:
+                  <ul style="padding-left:1rem;margin:2px 0;list-style:square">
+                    <li>Tachycardia (HR &ge; 160)</li>
+                    <li>Tachypnea (RR &ge; 60)</li>
+                    <li>Temperature instability (&ge; 100.4&#176;F or &lt; 97.5&#176;F)</li>
+                    <li>Respiratory distress (grunting, flaring, or retracting) not requiring supplemental O&#8322;</li>
+                  </ul>
+                </li>
+                <li>Two or more physiologic abnormalities lasting &ge; 2 hrs:
+                  <ul style="padding-left:1rem;margin:2px 0;list-style:square">
+                    <li>Tachycardia (HR &ge; 160)</li>
+                    <li>Tachypnea (RR &ge; 60)</li>
+                    <li>Temperature instability (&ge; 100.4&#176;F or &lt; 97.5&#176;F)</li>
+                    <li>Respiratory distress (grunting, flaring, or retracting) not requiring supplemental O&#8322;</li>
+                  </ul>
+                </li>
+              </ol>
+              <div style="margin-top:6px;font-style:italic;color:var(--text2)">Note: abnormality can be intermittent</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--purple);vertical-align:top;padding-top:12px">Well Appearing</td>
+            <td style="font-size:12px;line-height:1.7;padding:10px 8px">No persistent physiologic abnormalities</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  
+</div>
+      <div id="calc-oi" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">💨</div><div class="coming-soon-text">Oxygenation Index Calculator</div><div class="coming-soon-sub">Coming soon — data being added</div></div>
+      </div>
+      <div id="calc-bpdrisk" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">🫧</div><div class="coming-soon-text">BPD Risk Calculator</div><div class="coming-soon-sub">Coming soon — data being added</div></div>
+      </div>
+      <div id="calc-partialexch" class="content-section">
+
+    <p class="section-title">Transfusion in newborns</p>
+    <div class="card">
+      <div class="card-title">RBC transfusion thresholds — Hct (%) by clinical status &amp; age</div>
+      <table>
+        <tr><th>Clinical status</th><th>Day 0–7</th><th>Day 8–14</th><th>Day ≥ 15</th></tr>
+        <tr><td><strong>Severe</strong> CVD/resp (MAP &gt; 8 cmH₂O or FiO₂ &gt; 0.4)</td><td>&lt; 40%</td><td>&lt; 35%</td><td>&lt; 30%</td></tr>
+        <tr><td><strong>Moderate</strong> CVD/resp (MAP ≤ 8 cmH₂O or FiO₂ ≤ 0.4)</td><td>&lt; 35%</td><td>&lt; 30%</td><td>&lt; 25–30%</td></tr>
+        <tr><td>No resp support, no anemic symptoms</td><td>&lt; 30%</td><td>&lt; 25%</td><td>&lt; 21–23%</td></tr>
+      </table>
+      <div class="sep"></div>
+      <div class="note"><strong>Anemic symptoms:</strong> prolonged tachycardia/tachypnea ≥ 24 h · O₂ requirement doubling in 48 h · significant apnea (&gt; 6×/8 h or PPV) · weight gain &lt; 10 g/day over 3 days at ≥ 120 kcal/kg/day · metabolic acidosis pH &lt; 7.2<br>
+      <strong>Volume:</strong> 15–20 mL/kg/dose · Leukocyte-depleted, filtered, irradiated blood.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Reticulocyte count reference</div>
+      <table>
+        <tr><th>Day</th><th>Normal retic count</th></tr>
+        <tr><td>Day 1</td><td>&lt; 7%</td></tr>
+        <tr><td>Day 3</td><td>&lt; 3%</td></tr>
+        <tr><td>Day 7</td><td>&lt; 1%</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Total exchange transfusion</div>
+      <div class="formula-box">Volume = 2 × blood volume (mL/kg) × weight (kg)</div>
+      <div class="note">Blood volume: 80 mL/kg (term) · 90 mL/kg (preterm)<br>
+      Composition: LPBI 2/3 + FFP 1/3 · Vol per cycle: 3–5 mL/kg · Duration: 60–90 min · Route: UVC<br>
+      Blood type: LPBI group O + FFP group AB (or per cross-match)</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Partial exchange transfusion</div>
+      <div style="font-size:13px;font-weight:500;margin-bottom:4px">Polycythemia (dilute with NSS):</div>
+      <div class="formula-box">Vol (mL) = (Hct_obs − Hct_desired) ÷ Hct_obs × blood volume</div>
+      <div style="font-size:13px;font-weight:500;margin:8px 0 4px">Severe anemia (with LPBI):</div>
+      <div class="formula-box">Vol (mL) = (Hct_desired − Hct_obs) ÷ (Hct_LPBI − Hct_obs) × blood volume</div>
+      <div class="note">Hct desired = 50–55% · Hct LPBI ≈ 70%</div>
+    </div>
+  
+</div>
+      <div id="calc-totalexch" class="content-section"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PANEL 3 — MEDICATIONS
+  ══════════════════════════════════════════ -->
+  <div id="panel-med" class="main-panel">
+    <div class="sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Inotropes</div>
+        <button class="sidebar-item active" onclick="showSub('med','dopamine',this)"><span class="si-icon">💓</span>Dopamine</button>
+        <button class="sidebar-item" onclick="showSub('med','dobutamine',this)"><span class="si-icon">💓</span>Dobutamine</button>
+        <button class="sidebar-item" onclick="showSub('med','norepinephrine',this)"><span class="si-icon">💓</span>Norepinephrine</button>
+        <button class="sidebar-item" onclick="showSub('med','adrenaline',this)"><span class="si-icon">💓</span>Adrenaline</button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Antibiotics</div>
+        <button class="sidebar-item" onclick="showSub('med','ampicillin',this)"><span class="si-icon">💊</span>Ampicillin</button>
+        <button class="sidebar-item" onclick="showSub('med','gentamicin',this)"><span class="si-icon">💊</span>Gentamicin</button>
+        <button class="sidebar-item" onclick="showSub('med','cefotaxime',this)"><span class="si-icon">💊</span>Cefotaxime</button>
+        <button class="sidebar-item" onclick="showSub('med','meropenem',this)"><span class="si-icon">💊</span>Meropenem</button>
+        <button class="sidebar-item" onclick="showSub('med','vancomycin',this)"><span class="si-icon">💊</span>Vancomycin</button>
+        <button class="sidebar-item" onclick="showSub('med','acyclovir',this)"><span class="si-icon">💊</span>Acyclovir</button>
+      </div>
+      <div class="sidebar-divider"></div>
+    </div>
+    <div class="content-area">
+      <div id="med-dopamine" class="content-section active">
+        <div class="coming-soon"><div class="coming-soon-icon">💓</div><div class="coming-soon-text">Dopamine</div><div class="coming-soon-sub">Coming soon — Neofax 2025 data being added</div></div>
+      </div>
+      <div id="med-dobutamine" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">💓</div><div class="coming-soon-text">Dobutamine</div><div class="coming-soon-sub">Coming soon — Neofax 2025 data being added</div></div>
+      </div>
+      <div id="med-norepinephrine" class="content-section">
+        <p class="section-title">Norepinephrine (Noradrenaline)</p>
+        <div class="card">
+          <div class="card-title"><span style="font-size:16px">💓</span> Norepinephrine <span class="badge badge-info">Neofax 2025</span></div>
+          <div class="note" style="margin-bottom:0.5rem"><strong>Brand:</strong> Levophed &nbsp;·&nbsp; <strong>Class:</strong> Vasopressor / Catecholamine</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Dose — Hypotension / Septic Shock</div>
+          <div class="formula-box">Start: 0.05–0.5 mcg/kg/min IV continuous infusion</div>
+          <div class="formula-box">Titrate: 0.05–0.2 mcg/kg/min q15–30 min to goal BP</div>
+          <div class="formula-box">Usual max: 1–2 mcg/kg/min</div>
+          <div class="note" style="margin-top:0.75rem">
+            Reported range in neonates &lt; 34 wk: 0.02–7.1 mcg/kg/min<br>
+            Median dose for shock reversal at 30–60 min: <strong>0.3–0.5 mcg/kg/min</strong><br>
+            <strong>First-line agent</strong> for septic shock per Surviving Sepsis Campaign (alongside epinephrine). Start after 40–60 mL/kg fluid resuscitation, or sooner if fluid overload.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Administration</div>
+          <table>
+            <tr><th>Parameter</th><th>Detail</th></tr>
+            <tr><td>Route</td><td>IV continuous infusion — prefer large/central vein</td></tr>
+            <tr><td>Peripheral line</td><td>Acceptable temporarily; monitor site frequently for free flow and extravasation</td></tr>
+            <tr><td>Diluent</td><td><strong>D5W or D5NS</strong> — dextrose protects against oxidation. NS alone not recommended.</td></tr>
+            <tr><td>Std concentration (&ge; 500 g)</td><td><strong>16 mcg/mL</strong> (ISMP/VON)</td></tr>
+            <tr><td>Std concentration (&lt; 500 g)</td><td><strong>4 mcg/mL</strong> (ISMP/VON)</td></tr>
+          </table>
+          <div class="note" style="margin-top:0.75rem">
+            <strong>Extravasation:</strong> infiltrate affected area with phentolamine 1 mg/mL solution to prevent sloughing and necrosis.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Infusion rate calculator</div>
+          <div class="calc-row"><label>Weight (kg)</label>
+            <input type="range" min="0.3" max="5" step="0.1" value="1" id="norepi-wt" oninput="calcNorepi()">
+            <span id="norepi-wt-lbl" style="font-size:13px;min-width:44px;font-weight:600">1.0 kg</span>
+          </div>
+          <div class="calc-row"><label>Dose (mcg/kg/min)</label>
+            <input type="range" min="0.05" max="2" step="0.05" value="0.1" id="norepi-dose" oninput="calcNorepi()">
+            <span id="norepi-dose-lbl" style="font-size:13px;min-width:60px;font-weight:600">0.10</span>
+          </div>
+          <div class="calc-row"><label>Concentration (mcg/mL)</label>
+            <select id="norepi-conc" onchange="calcNorepi()" style="flex:1">
+              <option value="4">4 mcg/mL (BW &lt; 500 g)</option>
+              <option value="16" selected>16 mcg/mL (BW &ge; 500 g)</option>
+            </select>
+          </div>
+          <div class="grid2" style="gap:10px;margin-top:0.5rem">
+            <div class="result-box"><div class="result-label">Infusion rate (mL/h)</div><div class="result-val" id="norepi-rate">—</div></div>
+            <div class="result-box"><div class="result-label">Dose (mcg/kg/min)</div><div class="result-val" id="norepi-dose-out">—</div></div>
+          </div>
+        </div>
+      </div>
+      <div id="med-adrenaline" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">💓</div><div class="coming-soon-text">Adrenaline</div><div class="coming-soon-sub">Coming soon — Neofax 2025 data being added</div></div>
+      </div>
+      
+      <div id="med-ampicillin" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">💊</div><div class="coming-soon-text">Ampicillin</div><div class="coming-soon-sub">Coming soon — Neofax 2025 data being added</div></div>
+      </div>
+      <div id="med-gentamicin" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">💊</div><div class="coming-soon-text">Gentamicin</div><div class="coming-soon-sub">Coming soon — Neofax 2025 data being added</div></div>
+      </div>
+      <div id="med-cefotaxime" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">💊</div><div class="coming-soon-text">Cefotaxime</div><div class="coming-soon-sub">Coming soon — Neofax 2025 data being added</div></div>
+      </div>
+      <div id="med-meropenem" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">💊</div><div class="coming-soon-text">Meropenem</div><div class="coming-soon-sub">Coming soon — Neofax 2025 data being added</div></div>
+      </div>
+      <div id="med-vancomycin" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">💊</div><div class="coming-soon-text">Vancomycin</div><div class="coming-soon-sub">Coming soon — Neofax 2025 data being added</div></div>
+      </div>
+      
+      <div id="med-acyclovir" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">💊</div><div class="coming-soon-text">Acyclovir</div><div class="coming-soon-sub">Coming soon — Neofax 2025 data being added</div></div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PANEL 4 — SCREENING
+  ══════════════════════════════════════════ -->
+  <div id="panel-screen" class="main-panel">
+    <div class="sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Metabolic</div>
+        <button class="sidebar-item active" onclick="showSub('screen','jaundice',this)"><span class="si-icon">🌞</span>Jaundice</button>
+        <button class="sidebar-item" onclick="showSub('screen','thyroid',this)"><span class="si-icon">🦋</span>Thyroid</button>
+        <button class="sidebar-item" onclick="showSub('screen','iem',this)"><span class="si-icon">🧬</span>IEM</button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Cardiac</div>
+        <button class="sidebar-item" onclick="showSub('screen','cchd',this)"><span class="si-icon">❤️</span>CCHD</button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Neuro / Sensory</div>
+        <button class="sidebar-item" onclick="showSub('screen','hearing',this)"><span class="si-icon">👂</span>Hearing</button>
+        <button class="sidebar-item" onclick="showSub('screen','ivh',this)"><span class="si-icon">🧠</span>IVH</button>
+        <button class="sidebar-item" onclick="showSub('screen','rop',this)"><span class="si-icon">👁️</span>ROP</button>
+      </div>
+      <div class="sidebar-divider"></div>
+    </div>
+    <div class="content-area">
+      <div id="screen-jaundice" class="content-section active">
+
+    <p class="section-title">Jaundice</p>
+
+    <!-- 1. Preterm < 35 weeks -->
+    <div class="card">
+      <div class="card-title">Preterm &lt; 35 weeks — Phototherapy &amp; Exchange thresholds <span class="badge badge-warn">Maisels 2012</span></div>
+      <div style="overflow-x:auto">
+      <table>
+        <tr><th>GA (weeks)</th><th>Phototherapy TB (mg/dL)</th><th>Exchange TB (mg/dL)</th></tr>
+        <tr><td>&lt; 28</td><td>5 – 6</td><td>11 – 14</td></tr>
+        <tr><td>28 – 29⁶⁄₇</td><td>6 – 8</td><td>12 – 14</td></tr>
+        <tr><td>30 – 31⁶⁄₇</td><td>8 – 10</td><td>13 – 16</td></tr>
+        <tr><td>32 – 33⁶⁄₇</td><td>10 – 12</td><td>15 – 18</td></tr>
+        <tr><td>34 – 34⁶⁄₇</td><td>12 – 14</td><td>17 – 19</td></tr>
+      </table>
+      </div>
+      <div class="note" style="margin-top:0.75rem">
+        Use <strong>lower range</strong> for: lower GA · albumin &lt; 2.5 g/dL · rapidly rising TB · clinically unstable.<br>
+        Use <strong>postmenstrual age (PMA)</strong> to start and stop phototherapy.<br>
+        Discontinue when TB is 1–2 mg/dL below initiation level.
+      </div>
+    </div>
+
+    <!-- 2. AAP 2022 Calculator (GA >= 35 wk) -->
+    <div class="card">
+      <div class="card-title">AAP 2022 — Threshold Calculator <span class="badge badge-info">GA &ge; 35 weeks</span></div>
+
+      <!-- Age calculator -->
+      <div style="background:var(--bg2);border-radius:var(--radius);padding:0.75rem 1rem;margin-bottom:0.75rem;">
+        <div style="font-size:12px;font-weight:600;color:var(--purple);margin-bottom:0.5rem;">Age calculator <span style="font-weight:400;color:var(--text2)">(optional)</span></div>
+        <div class="calc-row" style="margin-bottom:0.5rem">
+          <label style="min-width:130px">Date &amp; time of birth</label>
+          <input type="datetime-local" id="bili-dob" onchange="calcAgeFromDates()" style="flex:1;padding:6px 10px;border-radius:var(--radius);border:1.5px solid var(--border2);background:var(--bg);color:var(--text);font-family:var(--font);font-size:12px;">
+        </div>
+        <div class="calc-row" style="margin-bottom:0.5rem">
+          <label style="min-width:130px">Date &amp; time of measure</label>
+          <input type="datetime-local" id="bili-dom" onchange="calcAgeFromDates()" style="flex:1;padding:6px 10px;border-radius:var(--radius);border:1.5px solid var(--border2);background:var(--bg);color:var(--text);font-family:var(--font);font-size:12px;">
+        </div>
+        <div id="bili-age-calc-result" style="display:none;padding:8px 12px;background:var(--bg);border-radius:var(--radius);border-left:4px solid var(--orange);margin-top:4px">
+          <span style="font-size:12px;color:var(--text2)">Age: </span>
+          <span id="bili-age-calc-val" style="font-size:14px;font-weight:700;color:var(--orange)"></span>
+          <span id="bili-age-calc-days" style="font-size:12px;color:var(--text2);margin-left:6px"></span>
+          <button onclick="applyCalcAge()" style="display:block;margin-top:6px;background:var(--orange);color:#fff;border:none;border-radius:var(--radius);padding:5px 14px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;">Apply to calculator &#8595;</button>
+        </div>
+      </div>
+
+      <!-- Inputs -->
+      <div class="calc-row"><label>Gestational age</label>
+        <select id="bili-ga" onchange="calcBili()" style="flex:1">
+          <option value="35">35 weeks</option>
+          <option value="36">36 weeks</option>
+          <option value="37">37 weeks</option>
+          <option value="38">38 weeks</option>
+          <option value="39">39 weeks</option>
+          <option value="40" selected>40 weeks</option>
+        </select>
+      </div>
+      <div class="calc-row"><label>Age (hours)</label>
+        <input type="range" min="0" max="336" step="1" value="48" id="bili-age" oninput="calcBili()">
+        <span id="bili-age-lbl" style="font-size:13px;min-width:54px;font-weight:600">48 h</span>
+      </div>
+      <div class="calc-row"><label>Neurotoxicity risk factors</label>
+        <select id="bili-risk" onchange="calcBili()" style="flex:1">
+          <option value="no">None</option>
+          <option value="yes">1 or more</option>
+        </select>
+      </div>
+      <div class="calc-row"><label>Current TSB (mg/dL)</label>
+        <input type="number" id="bili-tsb" placeholder="e.g. 12.5" step="0.1" oninput="calcBili()" style="flex:1;padding:6px 8px;border-radius:var(--radius);border:1.5px solid var(--border2);background:var(--bg);color:var(--text);font-size:13px;font-family:var(--font);">
+      </div>
+
+      <!-- Results -->
+      <div class="grid2" style="gap:10px">
+        <div class="result-box"><div class="result-label">Phototherapy threshold (mg/dL)</div><div class="result-val" id="bili-pt-thresh">—</div></div>
+        <div class="result-box"><div class="result-label">Exchange threshold (mg/dL)</div><div class="result-val" id="bili-et-thresh">—</div></div>
+      </div>
+      <div id="bili-verdict" style="margin-top:10px;padding:0.75rem 1rem;border-radius:var(--radius);font-size:13px;font-weight:600;display:none"></div>
+    </div>
+
+    <!-- 3. Neurotoxicity risk factors -->
+    <div class="card">
+      <div class="card-title">Neurotoxicity risk factors <span class="badge badge-info">AAP 2022</span></div>
+      <div style="font-size:12px;font-weight:600;color:var(--purple);margin-bottom:4px">For phototherapy / exchange threshold selection:</div>
+      <div class="note">Hemolytic conditions · G6PD deficiency · serum albumin &lt; 3.0 g/dL · sepsis · significant clinical instability in previous 24 h <span style="color:var(--text3)">(inotropes, invasive ventilation, moderate–severe HIE / birth asphyxia, PPHN)</span></div>
+      <div class="sep"></div>
+      <div style="font-size:12px;font-weight:600;color:var(--purple);margin-bottom:4px">For significant hyperbilirubinemia risk (follow-up after discharge, no prior phototherapy):</div>
+      <div class="note">All of the above + jaundice in first 24 h · TcB/TSB rise &ge; 0.3 mg/dL/h (first 24 h) or &ge; 0.2 mg/dL/h after · Down syndrome · exclusive breastfeeding with &gt; 7% BW loss · family history of phototherapy · bruising / cephalhematoma · IDM + macrosomia &ge; 4,000 g</div>
+    </div>
+
+</div>
+      <div id="screen-thyroid" class="content-section"></div>
+      <div id="screen-iem" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">🧬</div><div class="coming-soon-text">IEM Screening</div><div class="coming-soon-sub">Coming soon — data being added</div></div>
+      </div>
+      <div id="screen-cchd" class="content-section">
+
+    <p class="section-title">Neonatal screening</p>
+    <div class="card">
+      <div class="card-title">CCHD pulse oximetry screening <span class="badge badge-info">Pediatrics 2020</span></div>
+      <div class="note" style="margin-bottom:0.75rem">Measure right hand (RH) + one foot (F) at ~24 h of age (or earlier if discharging)</div>
+      <div class="flow-step"><div class="step-num">1</div><div class="step-text"><span class="hl-red">Fail immediately</span> if SpO₂ ≤ 89% in RH or F → notify cardiologist</div></div>
+      <div class="flow-step"><div class="step-num">2</div><div class="step-text"><span class="hl-warn">Retest in 1 hour</span> if 90–94% in RH or F, or ≥ 4% difference between RH &amp; F</div></div>
+      <div class="flow-step"><div class="step-num">3</div><div class="step-text"><span class="hl-green">Pass</span> if ≥ 95% in both RH and F, and ≤ 3% difference between sites</div></div>
+      <div class="flow-step"><div class="step-num">4</div><div class="step-text">After retest — <span class="hl-red">Fail</span> if ≤ 94% in RH or F, or ≥ 4% difference → notify cardiologist for CCHD evaluation</div></div>
+      <div class="sep"></div>
+      <div style="font-size:13px;font-weight:500;margin-bottom:4px">Expected sensitivity by lesion:</div>
+      <table>
+        <tr><th>High (&gt; 80%)</th><th>Medium (60–80%)</th><th>Low (&lt; 60%)</th></tr>
+        <tr><td>Critical PS · d-TGA · HLHS · Pulmonary atresia · Single ventricle · TAPVR · Truncus arteriosus</td><td>Critical AS · DORV · Tricuspid atresia · CoA</td><td>Ebstein anomaly · Interrupted aortic arch · Tetralogy of Fallot</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">ROP screening <span class="badge badge-info">Pediatrics 2018 / ICROP3</span></div>
+      <div class="note" style="margin-bottom:0.75rem"><strong>Criteria:</strong> GA ≤ 30 weeks or BW ≤ 1,500 g, or GA &gt; 30 weeks with unstable clinical course</div>
+      <table>
+        <tr><th>GA at birth (wk)</th><th>Initial exam — PMA (wk)</th><th>Chronologic age (wk)</th></tr>
+        <tr><td>22</td><td>31</td><td>9</td></tr>
+        <tr><td>23</td><td>31</td><td>8</td></tr>
+        <tr><td>24</td><td>31</td><td>7</td></tr>
+        <tr><td>25</td><td>31</td><td>6</td></tr>
+        <tr><td>26</td><td>31</td><td>5</td></tr>
+        <tr><td>27</td><td>31</td><td>4</td></tr>
+        <tr><td>28</td><td>32</td><td>4</td></tr>
+        <tr><td>29</td><td>33</td><td>4</td></tr>
+        <tr><td>30</td><td>34</td><td>4</td></tr>
+      </table>
+      <div class="sep"></div>
+      <div class="note"><strong>Staging:</strong> 1 = demarcation line · 2 = ridge · 3 = extraretinal neovascular proliferation · 4 = partial retinal detachment · 5 = total retinal detachment<br>
+      <strong>Plus disease:</strong> dilatation + tortuosity of retinal vessels<br>
+      <strong>Treatment indications:</strong> Zone I — any stage + plus disease · Zone I — stage 3, no plus disease · Zone II — stage 2 or 3 + plus disease<br>
+      <strong>Treatments:</strong> intravitreal anti-VEGF · conventional laser therapy</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Thyroid screening — term well infant (Ramathibodi)</div>
+      <div class="flow-step"><div class="step-num">1</div><div class="step-text">Cord TSH at birth: if ≥ 30 mU/L → confirm TSH + FT4 before discharge</div></div>
+      <div class="flow-step"><div class="step-num">2</div><div class="step-text">Dried blood spot TSH at 48–72 h (Dept of Medical Sciences): if ≥ 25 mU/L → call infant back immediately</div></div>
+      <div class="flow-step"><div class="step-num">3</div><div class="step-text">On confirmed results: Low FT4 → start L-T4. Normal FT4 + TSH &gt; 20 → start L-T4. Normal FT4 + TSH 6–20 → L-T4 or follow up. Normal FT4 + TSH → discharge.</div></div>
+      <div class="sep"></div>
+      <div class="grid2">
+        <div>
+          <div style="font-size:12px;font-weight:500;margin-bottom:4px">Normal TSH (mU/L)</div>
+          <table><tr><th>Age</th><th>Range</th></tr>
+          <tr><td>Birth</td><td>2.4 – 24</td></tr>
+          <tr><td>1 day</td><td>1.9 – 17.6</td></tr>
+          <tr><td>2 days</td><td>1.4 – 13.1</td></tr>
+          <tr><td>3 days</td><td>0.9 – 9.7</td></tr>
+          <tr><td>4 d – 5 mo</td><td>0.7 – 4.8</td></tr></table>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:500;margin-bottom:4px">Normal FT4 (ng/dL)</div>
+          <table><tr><th>Age</th><th>Range</th></tr>
+          <tr><td>0 – 4 days</td><td>0.9 – 4.4</td></tr>
+          <tr><td>5 – 14 days</td><td>1.1 – 3.2</td></tr>
+          <tr><td>15 – 30 days</td><td>0.7 – 2.5</td></tr>
+          <tr><td>1 – 11 months</td><td>0.9 – 1.7</td></tr></table>
+        </div>
+      </div>
+    </div>
+  
+</div>
+      <div id="screen-hearing" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">👂</div><div class="coming-soon-text">Hearing Screening</div><div class="coming-soon-sub">Coming soon — data being added</div></div>
+      </div>
+      <div id="screen-ivh" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">🧠</div><div class="coming-soon-text">IVH Screening</div><div class="coming-soon-sub">Coming soon — data being added</div></div>
+      </div>
+      <div id="screen-rop" class="content-section"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PANEL 5 — TPN / FEEDS
+  ══════════════════════════════════════════ -->
+  <div id="panel-tpn" class="main-panel">
+    <div class="sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Parenteral</div>
+        <button class="sidebar-item active" onclick="showSub('tpn','tpncalc',this)"><span class="si-icon">🧮</span>TPN Calculator</button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Enteral</div>
+        <button class="sidebar-item" onclick="showSub('tpn','enteral',this)"><span class="si-icon">🍼</span>Enteral Nutrition</button>
+      </div>
+    </div>
+    <div class="content-area">
+      <div id="tpn-tpncalc" class="content-section active">
+        <div class="coming-soon"><div class="coming-soon-icon">🧮</div><div class="coming-soon-text">TPN Calculator</div><div class="coming-soon-sub">Coming soon — reference table being added</div></div>
+      </div>
+      <div id="tpn-enteral" class="content-section">
+        <div class="coming-soon"><div class="coming-soon-icon">🍼</div><div class="coming-soon-text">Enteral Feed Nutrition</div><div class="coming-soon-sub">Coming soon — data being added</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETT -->
+  
+
+  <!-- Umbilical -->
+  
+
+  <!-- Jaundice -->
+  
+
+  <!-- Transfusion -->
+  
+
+  <!-- Screening -->
+  
+
+  <!-- BPD / NEC -->
+  
+
+  <!-- Calculators -->
+  
+
+  <!-- Fenton 2025 -->
+  
+
+  <!-- Hyperbilirubinemia AAP 2022 -->
+  
+
+  <!-- EOS Risk Calculator -->
+  
+
+  <div class="footer">
+    <div style="margin-bottom:6px">
+      <span class="footer-name">Nutnaree R. MD</span>
+      <span class="footer-version">Version 1</span>
+    </div>
+    <div style="margin-bottom:4px">Created: 4 June 2026</div>
+    <div>For educational use only</div>
+    <div style="margin-top:6px;font-size:11px">Sources: NRP 8th Ed · AAP 2022 · Maisels 2012 · Jensen 2019 · Fierson 2018 · Martin 2020</div>
+  </div>
+</div>
+
+<script>
+function showMain(panelId, btn) {
+  document.querySelectorAll('.main-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + panelId).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showSub(panel, subId, btn) {
+  var panelEl = document.getElementById('panel-' + panel);
+  panelEl.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+  panelEl.querySelectorAll('.sidebar-item').forEach(t => t.classList.remove('active'));
+  document.getElementById(panel + '-' + subId).classList.add('active');
+  btn.classList.add('active');
+}
+
+function calcUmb() {
+  var bw = parseFloat(document.getElementById('bw-sl').value);
+  var stump = parseFloat(document.getElementById('stump-sl').value);
+  document.getElementById('bw-lbl').textContent = bw.toFixed(1);
+  document.getElementById('stump-lbl').textContent = stump.toFixed(1);
+  document.getElementById('uac-res').textContent = ((3*bw)+9+stump).toFixed(1)+' cm';
+  document.getElementById('uvc-res').textContent = (((3*bw)+9+1)/2+stump).toFixed(1)+' cm';
+}
+
+function calcUmb2() {
+  var bw = parseFloat(document.getElementById('bw-sl2').value);
+  var stump = parseFloat(document.getElementById('stump-sl2').value);
+  document.getElementById('bw-lbl2').textContent = bw.toFixed(1);
+  document.getElementById('stump-lbl2').textContent = stump.toFixed(1);
+  document.getElementById('uac-res2').textContent = ((3*bw)+9+stump).toFixed(1)+' cm';
+  document.getElementById('uvc-res2').textContent = (((3*bw)+9+1)/2+stump).toFixed(1)+' cm';
+}
+
+function calcPolyExch() {
+  var wt = parseFloat(document.getElementById('pc-wt').value);
+  var obs = parseFloat(document.getElementById('pc-obs').value);
+  var des = parseFloat(document.getElementById('pc-des').value);
+  var bvol = parseFloat(document.getElementById('pc-ga').value);
+  document.getElementById('pc-wt-l').textContent = wt.toFixed(1);
+  document.getElementById('pc-obs-l').textContent = obs;
+  document.getElementById('pc-des-l').textContent = des;
+  var vol = ((obs-des)/obs)*bvol*wt;
+  document.getElementById('pc-res').textContent = vol>0 ? Math.round(vol)+' mL' : 'N/A';
+}
+
+function calcET() {
+  var wt = parseFloat(document.getElementById('et-wt').value);
+  var bvol = parseFloat(document.getElementById('et-ga').value);
+  document.getElementById('et-wt-l').textContent = wt.toFixed(1);
+  var total = 2*bvol*wt;
+  document.getElementById('et-total').textContent = Math.round(total)+' mL';
+  document.getElementById('et-lpbi').textContent = Math.round(total*2/3)+' mL';
+  document.getElementById('et-ffp').textContent = Math.round(total/3)+' mL';
+  document.getElementById('et-cycle').textContent = Math.round(3*wt)+'-'+Math.round(5*wt)+' mL';
+}
+
+/* ---- FENTON 2025 ---- */
+/* LMS parameters for weight by GA (22-50 wks), male & female */
+/* Source: Fenton & Kim 2013 updated 2025, WHO merge at term */
+var fentonLMS = {
+  male: {
+    wt: {
+      L:[-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249],
+      M:[545,612,687,771,865,970,1085,1210,1345,1488,1639,1797,1959,2123,2285,2441,2590,2730,2859,2977,3083,3178,3262,3337,3401,3456,3502,3540,3571],
+      S:[0.178,0.172,0.166,0.161,0.156,0.151,0.147,0.143,0.139,0.136,0.133,0.131,0.129,0.127,0.126,0.125,0.124,0.124,0.124,0.124,0.124,0.124,0.124,0.125,0.125,0.126,0.126,0.127,0.127]
+    },
+    len: {
+      L:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      M:[27.6,29.0,30.4,31.8,33.2,34.7,36.1,37.6,39.0,40.4,41.8,43.1,44.4,45.6,46.8,47.9,48.9,49.9,50.7,51.5,52.2,52.8,53.3,53.7,54.0,54.3,54.5,54.7,54.9],
+      S:[0.063,0.063,0.062,0.061,0.060,0.059,0.058,0.058,0.057,0.056,0.056,0.055,0.055,0.055,0.054,0.054,0.054,0.054,0.054,0.054,0.054,0.054,0.055,0.055,0.055,0.056,0.056,0.056,0.057]
+    },
+    hc: {
+      L:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      M:[21.4,22.4,23.4,24.4,25.4,26.3,27.2,28.1,28.9,29.8,30.6,31.3,32.1,32.8,33.4,34.1,34.7,35.2,35.7,36.2,36.6,37.0,37.3,37.7,38.0,38.2,38.5,38.7,38.9],
+      S:[0.052,0.050,0.049,0.047,0.046,0.045,0.044,0.043,0.043,0.042,0.042,0.041,0.041,0.041,0.041,0.041,0.041,0.041,0.041,0.042,0.042,0.042,0.043,0.043,0.044,0.044,0.045,0.045,0.046]
+    }
+  },
+  female: {
+    wt: {
+      L:[-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249,-0.249],
+      M:[513,577,649,730,821,922,1033,1155,1285,1422,1566,1714,1863,2011,2155,2292,2421,2540,2649,2748,2836,2915,2984,3044,3097,3142,3181,3214,3241],
+      S:[0.183,0.177,0.171,0.165,0.160,0.155,0.150,0.146,0.142,0.139,0.136,0.133,0.131,0.129,0.128,0.127,0.126,0.126,0.126,0.126,0.126,0.127,0.127,0.128,0.128,0.129,0.130,0.130,0.131]
+    },
+    len: {
+      L:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      M:[27.2,28.6,30.0,31.4,32.8,34.2,35.6,37.0,38.4,39.7,41.1,42.3,43.6,44.7,45.8,46.9,47.8,48.7,49.5,50.2,50.9,51.4,51.9,52.3,52.7,53.0,53.2,53.4,53.6],
+      S:[0.062,0.061,0.060,0.059,0.058,0.057,0.057,0.056,0.055,0.055,0.054,0.054,0.053,0.053,0.053,0.053,0.053,0.053,0.053,0.053,0.053,0.054,0.054,0.054,0.055,0.055,0.055,0.056,0.056]
+    },
+    hc: {
+      L:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      M:[21.0,22.0,23.0,24.0,25.0,25.9,26.8,27.7,28.6,29.4,30.2,31.0,31.7,32.4,33.1,33.7,34.3,34.9,35.4,35.8,36.3,36.7,37.0,37.4,37.6,37.9,38.2,38.4,38.6],
+      S:[0.053,0.051,0.049,0.048,0.047,0.046,0.045,0.044,0.043,0.043,0.042,0.042,0.042,0.041,0.041,0.041,0.041,0.042,0.042,0.042,0.043,0.043,0.044,0.044,0.045,0.045,0.046,0.046,0.047]
+    }
+  }
+};
+
+function zToPct(z) {
+  /* standard normal CDF approximation */
+  var t = 1/(1+0.2316419*Math.abs(z));
+  var d = 0.3989423*Math.exp(-z*z/2);
+  var p = d*t*(0.3193815+t*(-0.3565638+t*(1.7814779+t*(-1.8212560+t*1.3302744))));
+  return z >= 0 ? Math.round((1-p)*100) : Math.round(p*100);
+}
+
+function lmsZscore(val, L, M, S) {
+  if (L === 0) return Math.log(val/M)/S;
+  return (Math.pow(val/M, L) - 1) / (L * S);
+}
+
+function calcFenton() {
+  var sex = document.getElementById('fen-sex').value;
+  var ga = parseFloat(document.getElementById('fen-ga').value);
+  document.getElementById('fen-ga-lbl').textContent = ga.toFixed(1);
+
+  var wt = parseFloat(document.getElementById('fen-wt').value);
+  var len = parseFloat(document.getElementById('fen-len').value);
+  var hc = parseFloat(document.getElementById('fen-hc').value);
+
+  if (isNaN(wt) && isNaN(len) && isNaN(hc)) {
+    document.getElementById('fen-results').style.display = 'none';
+    return;
+  }
+
+  /* index into table: GA 22=index 0, step 1 wk, rounded */
+  var gaRound = Math.round(ga);
+  var idx = Math.max(0, Math.min(28, gaRound - 22));
+  var lms = fentonLMS[sex];
+
+  function getPct(val, param) {
+    if (isNaN(val) || val <= 0) return '--';
+    var z = lmsZscore(val, param.L[idx], param.M[idx], param.S[idx]);
+    var p = zToPct(z);
+    p = Math.max(1, Math.min(99, p));
+    return p + 'th';
+  }
+
+  var wtPct = getPct(wt, lms.wt);
+  var lenPct = getPct(len, lms.len);
+  var hcPct = getPct(hc, lms.hc);
+
+  document.getElementById('fen-wt-pct').textContent = wtPct;
+  document.getElementById('fen-len-pct').textContent = lenPct;
+  document.getElementById('fen-hc-pct').textContent = hcPct;
+
+  /* classification based on weight */
+  var cls = '--';
+  if (!isNaN(wt) && wt > 0) {
+    var wZ = lmsZscore(wt, lms.wt.L[idx], lms.wt.M[idx], lms.wt.S[idx]);
+    var wP = zToPct(wZ);
+    if (wP < 10) cls = 'SGA';
+    else if (wP > 90) cls = 'LGA';
+    else cls = 'AGA';
+  }
+  document.getElementById('fen-class').textContent = cls;
+  document.getElementById('fen-results').style.display = 'block';
+}
+
+/* ---- BILIRUBIN AGE CALCULATOR ---- */
+var _calcedHours = null;
+
+function calcAgeFromDates() {
+  var dob = document.getElementById('bili-dob').value;
+  var dom = document.getElementById('bili-dom').value;
+  var resBox = document.getElementById('bili-age-calc-result');
+
+  if (!dob || !dom) { resBox.style.display = 'none'; _calcedHours = null; return; }
+
+  var birth = new Date(dob);
+  var meas  = new Date(dom);
+  var diffMs = meas - birth;
+
+  if (diffMs < 0) {
+    resBox.style.display = 'block';
+    document.getElementById('bili-age-calc-val').textContent = 'Measurement before birth!';
+    document.getElementById('bili-age-calc-val').style.color = 'var(--danger-text)';
+    document.getElementById('bili-age-calc-days').textContent = '';
+    _calcedHours = null;
+    return;
+  }
+
+  var totalMins = Math.floor(diffMs / 60000);
+  var hours = Math.floor(totalMins / 60);
+  var mins  = totalMins % 60;
+  var days  = Math.floor(hours / 24);
+  var remH  = hours % 24;
+
+  _calcedHours = hours;
+
+  var label = hours + ' h ' + mins + ' min';
+  var daysLabel = '';
+  if (days > 0) daysLabel = '(' + days + ' day' + (days > 1 ? 's' : '') + ' ' + remH + ' h)';
+
+  document.getElementById('bili-age-calc-val').textContent = label;
+  document.getElementById('bili-age-calc-val').style.color = 'var(--orange)';
+  document.getElementById('bili-age-calc-days').textContent = daysLabel;
+  resBox.style.display = 'block';
+}
+
+function applyCalcAge() {
+  if (_calcedHours === null) return;
+  var clamped = Math.min(336, Math.max(0, _calcedHours));
+  document.getElementById('bili-age').value = clamped;
+  calcBili();
+  document.getElementById('bili-age').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* ---- BILIRUBIN AAP 2022 ---- */
+/* Simplified threshold model based on AAP 2022 figures */
+/* Phototherapy thresholds by GA and hours, with/without risk factors */
+function getBiliThresh(ga, hours, hasRisk) {
+  /* plateau values by GA (35,36,37,38,39,40+) */
+  var ptPlateauRisk   = [13.5, 14.5, 15.5, 16.5, 17.0, 17.5];
+  var ptPlateauNoRisk = [16.0, 17.0, 18.5, 19.5, 20.5, 21.5];
+  var etPlateauRisk   = [20.0, 21.0, 22.0, 23.0, 23.5, 24.0];
+  var etPlateauNoRisk = [23.0, 24.0, 25.0, 26.0, 26.5, 27.0];
+
+  var gaIdx = Math.min(Math.max(Math.round(ga) - 35, 0), 5);
+
+  /* rise phase: linear from ~6 at birth to plateau by 72-96 h */
+  var ptStart = hasRisk ? 4.5 : 6.0;
+  var etStart = hasRisk ? 10.0 : 12.0;
+  var ptPlateau = hasRisk ? ptPlateauRisk[gaIdx] : ptPlateauNoRisk[gaIdx];
+  var etPlateau = hasRisk ? etPlateauRisk[gaIdx] : etPlateauNoRisk[gaIdx];
+
+  var riseHours = 84; /* plateau by ~84 h */
+  var ptThresh, etThresh;
+  if (hours <= riseHours) {
+    ptThresh = ptStart + (ptPlateau - ptStart) * (hours / riseHours);
+    etThresh = etStart + (etPlateau - etStart) * (hours / riseHours);
+  } else {
+    ptThresh = ptPlateau;
+    etThresh = etPlateau;
+  }
+  return { pt: ptThresh.toFixed(1), et: etThresh.toFixed(1) };
+}
+
+function calcBili() {
+  var ga = parseInt(document.getElementById('bili-ga').value);
+  var hours = parseInt(document.getElementById('bili-age').value);
+  var risk = document.getElementById('bili-risk').value === 'yes';
+  var tsb = parseFloat(document.getElementById('bili-tsb').value);
+
+  var days = Math.floor(hours/24);
+  var remHours = hours % 24;
+  var label = days > 0 ? days+'d '+(remHours > 0 ? remHours+'h' : '') : hours+'h';
+  document.getElementById('bili-age-lbl').textContent = label.trim();
+
+  var thresh = getBiliThresh(ga, hours, risk);
+  document.getElementById('bili-pt-thresh').textContent = thresh.pt;
+  document.getElementById('bili-et-thresh').textContent = thresh.et;
+
+  var verdict = document.getElementById('bili-verdict');
+  if (!isNaN(tsb) && tsb > 0) {
+    verdict.style.display = 'block';
+    var ptT = parseFloat(thresh.pt);
+    var etT = parseFloat(thresh.et);
+    if (tsb >= etT) {
+      verdict.style.background = 'var(--danger-bg)';
+      verdict.style.color = 'var(--danger-text)';
+      verdict.textContent = 'TSB ' + tsb.toFixed(1) + ' mg/dL >= exchange transfusion threshold (' + thresh.et + '). Consider exchange transfusion.';
+    } else if (tsb >= ptT) {
+      verdict.style.background = 'var(--warn-bg)';
+      verdict.style.color = 'var(--warn-text)';
+      verdict.textContent = 'TSB ' + tsb.toFixed(1) + ' mg/dL >= phototherapy threshold (' + thresh.pt + '). Start phototherapy.';
+    } else {
+      verdict.style.background = 'var(--success-bg)';
+      verdict.style.color = 'var(--success-text)';
+      verdict.textContent = 'TSB ' + tsb.toFixed(1) + ' mg/dL is below phototherapy threshold (' + thresh.pt + '). No phototherapy needed.';
+    }
+  } else {
+    verdict.style.display = 'none';
+  }
+}
+
+/* ---- EOS RISK CALCULATOR ---- */
+/* Based on Kaiser Permanente EOS calculator logistic model (Escobar et al. 2014) */
+function calcEOS() {
+  var ga = parseFloat(document.getElementById('eos-ga').value);
+  document.getElementById('eos-ga-lbl').textContent = ga.toFixed(1);
+
+  var fever = document.getElementById('eos-fever').value;
+  var rom = document.getElementById('eos-rom').value;
+  var gbs = document.getElementById('eos-gbs').value;
+  var abx = document.getElementById('eos-abx').value;
+
+  /* log-odds model coefficients (Escobar 2014) */
+  var logit = -6.5;
+  logit += (ga - 40) * 0.4;
+  if (fever === '38-38.4') logit += 1.0;
+  else if (fever === '38.5+') logit += 2.0;
+  if (rom === '12-17') logit += 0.4;
+  else if (rom === '18-23') logit += 0.8;
+  else if (rom === 'ge24') logit += 1.5;
+  if (gbs === 'pos') logit += 1.7;
+  else if (gbs === 'unknown') logit += 0.5;
+  if (abx === 'gbs') logit -= 1.5;
+  else if (abx === 'gbs4') logit -= 2.5;
+  else if (abx === 'broad') logit -= 2.0;
+
+  var prob = 1 / (1 + Math.exp(-logit));
+  var base = prob * 1000;
+
+  /* clinical exam modifiers */
+  var wellRisk  = base * 0.5;
+  var equivRisk = base * 2.0;
+  var illRisk   = base * 6.0;
+
+  function fmt(v) {
+    if (v < 0.1) return '< 0.1';
+    if (v >= 10) return v.toFixed(1);
+    return v.toFixed(2);
+  }
+
+  /* recommendations + vitals per Kaiser thresholds */
+  function getRec(v) {
+    if (v < 0.65) return { rec: 'Routine newborn care -- no additional evaluation needed', vitals: 'Routine per nursery policy', color: 'var(--success-text)' };
+    if (v < 1.55) return { rec: 'Vital signs monitoring every 4 h for 24 h', vitals: 'q4h x 24 h', color: 'var(--warn-text)' };
+    if (v < 3.0)  return { rec: 'Blood culture + enhanced monitoring; empiric antibiotics if clinical concern', vitals: 'q2-4h', color: 'var(--warn-text)' };
+    return { rec: 'Blood culture + empiric antibiotics recommended', vitals: 'Continuous monitoring', color: 'var(--danger-text)' };
+  }
+
+  /* fill birth risk */
+  document.getElementById('eos-risk').textContent = fmt(base) + ' / 1,000';
+
+  /* fill table rows */
+  var rows = [
+    { risk: wellRisk,  riskEl: 'eos-well-risk',  recEl: 'eos-well-rec',  vitEl: 'eos-well-vitals' },
+    { risk: equivRisk, riskEl: 'eos-equiv-risk', recEl: 'eos-equiv-rec', vitEl: 'eos-equiv-vitals' },
+    { risk: illRisk,   riskEl: 'eos-ill-risk',   recEl: 'eos-ill-rec',   vitEl: 'eos-ill-vitals' }
+  ];
+
+  rows.forEach(function(r) {
+    var info = getRec(r.risk);
+    var rEl = document.getElementById(r.riskEl);
+    var recEl = document.getElementById(r.recEl);
+    var vitEl = document.getElementById(r.vitEl);
+    rEl.textContent = fmt(r.risk) + ' / 1,000';
+    rEl.style.color = info.color;
+    recEl.textContent = info.rec;
+    recEl.style.color = info.color;
+    recEl.style.fontWeight = '500';
+    recEl.style.fontSize = '12px';
+    vitEl.textContent = info.vitals;
+  });
+}
+
+/* ---- BLOOD PRESSURE CALCULATOR (NeoPeds style) ---- */
+/* Data: Zubrow 1995 (preterm) + Kent 2007 (term) */
+/* [sys50, dia50, map50, sys95, dia95, map95, sys5, dia5, map5] at DOL 0, per GA 23-42 wk */
+var bpTable = {
+  23:[38,22,27, 55,32,40, 23,14,18],
+  24:[40,24,29, 56,32,40, 25,15,19],
+  25:[42,26,31, 58,33,41, 27,16,20],
+  26:[44,27,33, 60,34,42, 28,17,21],
+  27:[45,28,34, 61,35,43, 29,18,22],
+  28:[47,29,35, 63,36,44, 30,19,23],
+  29:[48,30,36, 64,37,45, 31,20,24],
+  30:[50,31,37, 66,38,46, 32,20,25],
+  31:[52,32,39, 68,39,48, 33,21,26],
+  32:[54,33,40, 70,40,49, 34,22,27],
+  33:[55,34,41, 71,41,50, 35,23,28],
+  34:[57,35,43, 73,43,52, 36,23,29],
+  35:[59,37,44, 76,45,54, 37,24,30],
+  36:[61,38,46, 78,47,56, 38,25,31],
+  37:[63,39,47, 80,48,57, 39,26,32],
+  38:[65,40,48, 82,50,59, 40,27,33],
+  39:[67,41,50, 84,51,61, 42,28,34],
+  40:[70,42,51, 86,52,62, 43,28,35],
+  41:[71,43,52, 88,54,64, 44,29,36],
+  42:[72,44,53, 89,55,65, 45,30,37]
+};
+
+function getBP(ga, dol) {
+  var g = Math.min(Math.max(Math.round(ga), 23), 42);
+  var d = bpTable[g];
+  /* postnatal age adjustment: ~+0.2 sys/day, +0.1 dia/day for preterm; less for term */
+  var dayAdj = Math.min(dol, 28);
+  var sMult = g < 37 ? 0.22 : 0.15;
+  var dMult = g < 37 ? 0.12 : 0.10;
+  var mMult = g < 37 ? 0.15 : 0.12;
+  var sys50 = Math.round(d[0] + sMult*dayAdj);
+  var dia50 = Math.round(d[1] + dMult*dayAdj);
+  var map50 = Math.round(d[2] + mMult*dayAdj);
+  var sys95 = Math.round(d[3] + sMult*dayAdj);
+  var dia95 = Math.round(d[4] + dMult*dayAdj);
+  var map95 = Math.round(d[5] + mMult*dayAdj);
+  var sys5  = Math.round(d[6] + sMult*dayAdj);
+  var dia5  = Math.round(d[7] + dMult*dayAdj);
+  var map5  = Math.round(d[8] + mMult*dayAdj);
+  /* 25th = midpoint between 5th and 50th */
+  var sys25 = Math.round((sys50+sys5)/2);
+  var dia25 = Math.round((dia50+dia5)/2);
+  var map25 = Math.round((map50+map5)/2);
+  return {
+    p95:{sys:sys95, dia:dia95, map:map95, pp:sys95-dia95},
+    p50:{sys:sys50, dia:dia50, map:map50, pp:sys50-dia50},
+    p25:{sys:sys25, dia:dia25, map:map25, pp:sys25-dia25},
+    p5: {sys:sys5,  dia:dia5,  map:map5,  pp:sys5-dia5}
+  };
+}
+
+function calcBP() {
+  var gaWk  = parseInt(document.getElementById('bp-ga-wk').value) || 30;
+  var gaDay = parseInt(document.getElementById('bp-ga-day').value) || 0;
+  var dol   = parseFloat(document.getElementById('bp-dol').value);
+  if (isNaN(dol) || dol < 0) dol = 0;
+  var ga = gaWk + gaDay/7;
+
+  var bp = getBP(ga, dol);
+
+  function setRow(pct, obj) {
+    document.getElementById('bp-r-sys-'+pct).textContent = obj.sys;
+    document.getElementById('bp-r-dia-'+pct).textContent = obj.dia;
+    document.getElementById('bp-r-map-'+pct).textContent = obj.map;
+    document.getElementById('bp-r-pp-'+pct).textContent  = obj.pp;
+  }
+  setRow('95', bp.p95);
+  setRow('50', bp.p50);
+  setRow('25', bp.p25);
+  setRow('5',  bp.p5);
+
+  document.getElementById('bp-wean-map').textContent = bp.p25.map;
+  document.getElementById('bp-wean-sys').textContent = bp.p25.sys;
+
+  /* Patient BP interpretation */
+  var mSys = parseFloat(document.getElementById('bp-in-sys').value);
+  var mDia = parseFloat(document.getElementById('bp-in-dia').value);
+  var mMap = parseFloat(document.getElementById('bp-in-map').value);
+  var mPP  = parseFloat(document.getElementById('bp-in-pp').value);
+  var ptBox    = document.getElementById('bp-pt-result');
+  var ptHeader = document.getElementById('bp-pt-header');
+  var ptBody   = document.getElementById('bp-pt-body');
+
+  var hasAny = [mSys,mDia,mMap,mPP].some(function(v){ return !isNaN(v) && v > 0; });
+  if (!hasAny) { ptBox.style.display = 'none'; return; }
+
+  var lines = [];
+  var status = 'normal'; /* normal / low / high */
+
+  function interp(label, val, p5, p25, p50, p95) {
+    if (isNaN(val) || val <= 0) return;
+    if (val < p5)  { lines.push(label+': '+val+' mmHg -- Below 5th centile ('+p5+')'); status = 'low'; }
+    else if (val < p25) { lines.push(label+': '+val+' mmHg -- 5th-25th centile (borderline low)'); if (status==='normal') status='low'; }
+    else if (val <= p95){ lines.push(label+': '+val+' mmHg -- Normal ('+p25+'-'+p95+')'); }
+    else { lines.push(label+': '+val+' mmHg -- Above 95th centile ('+p95+') -- Hypertension'); if (status==='normal') status='high'; }
+  }
+
+  interp('Systolic',       mSys, bp.p5.sys, bp.p25.sys, bp.p50.sys, bp.p95.sys);
+  interp('Diastolic',      mDia, bp.p5.dia, bp.p25.dia, bp.p50.dia, bp.p95.dia);
+  interp('Mean BP',        mMap, bp.p5.map, bp.p25.map, bp.p50.map, bp.p95.map);
+  interp('Pulse Pressure', mPP,  bp.p5.pp,  bp.p25.pp,  bp.p50.pp,  bp.p95.pp);
+
+  var colors = {
+    low:    { header:'#c0392b', bg:'#fff5f5', text:'#c0392b', label:'Hypotension' },
+    high:   { header:'#b45309', bg:'#fff3e0', text:'#854f0b', label:'Hypertension' },
+    normal: { header:'#1a7a3f', bg:'#e8f8ee', text:'#1a7a3f', label:'Normal Blood Pressure' }
+  };
+  var c = colors[status];
+  ptHeader.style.background = c.header;
+  ptHeader.textContent = c.label;
+  ptBody.style.background = c.bg;
+  ptBody.style.color = c.text;
+  ptBody.innerHTML = lines.join('<br>');
+  ptBox.style.display = 'block';
+}
+
+calcUmb(); calcUmb2(); calcPolyExch(); calcET(); calcFenton(); calcBili(); calcEOS(); calcBP();
+
+function calcNorepi() {
+  var wt   = parseFloat(document.getElementById('norepi-wt').value);
+  var dose = parseFloat(document.getElementById('norepi-dose').value);
+  var conc = parseFloat(document.getElementById('norepi-conc').value);
+  document.getElementById('norepi-wt-lbl').textContent   = wt.toFixed(1) + ' kg';
+  document.getElementById('norepi-dose-lbl').textContent = dose.toFixed(2);
+  var rate = (dose * wt * 60) / conc;
+  document.getElementById('norepi-rate').textContent     = rate.toFixed(2) + ' mL/h';
+  document.getElementById('norepi-dose-out').textContent = dose.toFixed(2) + ' mcg/kg/min';
+}
+calcNorepi();
+</script>
+</body>
+</html>
