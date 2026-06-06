@@ -131,6 +131,53 @@
     max-width: 100%;
   }
 }
+#panel-tpn .content-area {
+  max-width: 100%;
+}
+}
+
+/* ── Strong TPN / Feeds width fix ── */
+#panel-tpn.active {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+}
+
+#panel-tpn .sidebar {
+  width: 175px;
+  flex: 0 0 175px;
+  margin-right: 1rem;
+}
+
+#panel-tpn .content-area {
+  flex: 1;
+  min-width: 0;
+  width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+#panel-tpn .content-section {
+  width: 100%;
+  max-width: 100%;
+}
+
+#panel-tpn .card {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+#panel-tpn .tpn-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+#panel-tpn .tpn-table {
+  width: 100%;
+  min-width: 560px;
+}
 
   /* CARDS */
   .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.1rem 1.25rem; margin-bottom:1rem; }
