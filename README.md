@@ -1,2 +1,2 @@
 # NeoGuide
-This repository is for practicing the GitHub Flow
+A practical neonatal companion for fellows, residents, and NICU teams.
