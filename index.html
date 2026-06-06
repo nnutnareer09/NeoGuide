@@ -59,7 +59,7 @@
 
   /* ── MAIN PANELS ── */
   .main-panel { display: none; }
-  .main-panel.active { display: flex; gap: 0; margin-top: 1.25rem; }
+  .main-panel.active {   display: flex;   gap: 0;   margin-top: 1.25rem;   align-items: flex-start;   width: 100%;   max-width: 100%; }
 
   /* ── SIDEBAR ── */
   .sidebar { width: 175px; flex-shrink: 0; margin-right: 1rem; }
@@ -79,7 +79,7 @@
   .sidebar-divider { height: 1px; background: var(--border); margin: 6px 10px; }
 
   /* ── CONTENT AREA ── */
-  .content-area { flex: 1; min-width: 0; }
+  .content-area {   flex: 1;   min-width: 0;   max-width: calc(100% - 191px); }
   .content-section { display: none; }
   .content-section.active { display: block; }
   .section-title { font-size:16px; font-weight:700; color:var(--neo-blue); margin-bottom:1rem; display:flex; align-items:center; gap:8px; }
@@ -91,16 +91,46 @@
   .coming-soon-text { font-size: 14px; font-weight: 500; color: var(--text2); }
   .coming-soon-sub { font-size: 12px; margin-top: 0.25rem; }
 
-  /* ── RESPONSIVE: collapse sidebar on mobile ── */
-  @media (max-width: 580px) {
-    .main-panel.active { flex-direction: column; }
-    .sidebar { width: 100%; margin-right: 0; margin-bottom: 0.75rem; display: flex; flex-wrap: wrap; gap: 6px; }
-    .sidebar-group { display: contents; }
-    .sidebar-group-label { display: none; }
-    .sidebar-divider { display: none; }
-    .sidebar-item { width: auto; font-size: 11px; padding: 6px 10px; border: 1.5px solid var(--border2); }
-    .sidebar-item.active { background:var(--orange); color:#fff; font-weight:600; box-shadow:0 4px 12px rgba(20,184,166,0.25); border-color:transparent; }
+ /* ── RESPONSIVE: collapse sidebar on mobile ── */
+@media (max-width: 580px) {
+  .main-panel.active { flex-direction: column; }
+
+  .sidebar {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
   }
+
+  .sidebar-group { display: contents; }
+  .sidebar-group-label { display: none; }
+  .sidebar-divider { display: none; }
+
+  .sidebar-item {
+    width: auto;
+    font-size: 11px;
+    padding: 6px 10px;
+    border: 1.5px solid var(--border2);
+  }
+
+  .sidebar-item.active {
+    background: var(--orange);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(20,184,166,0.25);
+    border-color: transparent;
+  }
+
+  .content-area {
+    max-width: 100%;
+  }
+
+  #panel-tpn .content-area {
+    max-width: 100%;
+  }
+}
 
   /* CARDS */
   .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.1rem 1.25rem; margin-bottom:1rem; }
@@ -193,8 +223,19 @@
   .tpn-set-line { display:flex; align-items:baseline; gap:8px; font-size:13px; margin-bottom:5px; flex-wrap:wrap; }
   .tpn-set-line span:first-child { min-width:110px; color:var(--text2); font-weight:600; }
   .tpn-formula { font-size:11px; color:var(--text3); font-style:italic; }
-  .tpn-table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
-  .tpn-table { width:100%; border-collapse:collapse; font-size:12px; min-width:560px; }
+  .tpn-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tpn-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
   .tpn-table th { background:var(--bg2); color:var(--neo-blue); font-weight:700; padding:7px 8px; text-align:center; border:1px solid var(--border); font-size:11px; }
   .tpn-table td { padding:6px 8px; border:1px solid var(--border); text-align:center; }
   .tpn-table td:first-child { text-align:left; font-weight:600; color:var(--text); }
@@ -215,6 +256,16 @@
   .tpn-cal strong { color:var(--neo-blue); }
   .tpn-cal-total { background:rgba(76,81,191,0.1); }
   .tpn-cal-total strong { color:var(--purple); }
+ #panel-tpn .content-area {
+  min-width: 0;
+  max-width: calc(100% - 191px);
+  overflow-x: hidden;
+}
+
+#panel-tpn .card {
+  max-width: 100%;
+  overflow: hidden;
+}
   @media (min-width:640px){ .tpn-sum-grid{ grid-template-columns:repeat(4,1fr);} }
 
 /* ── TPN / Feeds layout fix: match other tabs ── */
@@ -267,6 +318,47 @@
     margin-right: 0;
     margin-bottom: 0.75rem;
   }
+}
+ /* Strong fix for TPN / Feeds layout */
+#panel-tpn {
+  width: 100%;
+  max-width: 100%;
+}
+
+#panel-tpn.active {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+#panel-tpn .sidebar {
+  width: 175px;
+  flex: 0 0 175px;
+  margin-right: 1rem;
+}
+
+#panel-tpn .content-area {
+  flex: 1;
+  min-width: 0;
+  max-width: calc(100% - 191px);
+  overflow-x: hidden;
+}
+
+#panel-tpn .card {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+#panel-tpn .tpn-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+#panel-tpn .tpn-table {
+  width: 100%;
+  min-width: 560px;
 }
 </style>
 </head>
@@ -3466,14 +3558,24 @@ function calcTPN() {
   // 5. Calcium: Ca 0.23 mmol/mL, input mmol/100kcal/day -> uses factor
   var ca = comp('tc-ca-t', 0.23, 'tc-ca-tv','tc-ca-av','tc-ca-a');
 
-  // 6. Magnesium: uses WEIGHT not factor. Mg 4 meq/mL, input mmol/100kcal/day
-  var mgT = gv('tc-mg-t');
-  var mgVol = mgT * wt / 4;     // weight-based
-  setTxt('tc-mg-tv', mgT? mgVol.toFixed(1):'\u2014');
-  var mgAv = roundHalf(mgVol);
-  setTxt('tc-mg-av', mgT? mgAv.toFixed(1):'\u2014');
-  setTxt('tc-mg-a', mgT? (mgAv*4/wt).toFixed(2):'\u2014');
+ // 6. Magnesium: uses WEIGHT not factor. Mg 4 meq/mL, input mmol/100kcal/day
+var mgT = gv('tc-mg-t');
+var mgVol = mgT * wt / 4;     // weight-based
 
+setTxt('tc-mg-tv', mgT ? mgVol.toFixed(1) : '—');
+
+var mgAv = 0;
+
+if (mgT) {
+  if (mgVol > 0 && mgVol < 0.1) {
+    mgAv = 0.1;
+  } else {
+    mgAv = Math.round(mgVol * 10) / 10;
+  }
+}
+
+setTxt('tc-mg-av', mgT ? mgAv.toFixed(1) : '—');
+setTxt('tc-mg-a', mgT ? (mgAv * 4 / wt).toFixed(2) : '—');
   // 7. Trace: Zn 0.5 mL/kg, Peditrace 1 mL/kg (max 15) — use weight, round to .5
   var znVol = 0.5 * wt;
   var znAv = roundHalf(znVol);
